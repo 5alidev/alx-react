@@ -1,4 +1,4 @@
-import $ from "jquery";
+const $ = require( "jquery" );
 
 const paragraph1 = $("<p>Holberton Dashboard</p>");
 const paragraph2 = $("<p>Dashboard data for the students</p>");
