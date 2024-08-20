@@ -1,0 +1,4 @@
+body > p:last-child {
+    text-align: center;
+    color:grey;
+}
