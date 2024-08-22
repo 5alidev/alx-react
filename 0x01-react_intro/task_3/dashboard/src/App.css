@@ -1,0 +1,43 @@
+.App-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.App-header img {
+  width: 200px;
+  height: 200px;
+}
+
+.App-header h1 {
+  color: red;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.App-body p {
+  padding: 1.3rem 1.7rem;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+.App-footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.App-header {
+  padding-bottom: 2rem;
+  border-bottom: 4px solid red;
+}
+
+.App-footer {
+  border-top: 4px solid red;
+}
