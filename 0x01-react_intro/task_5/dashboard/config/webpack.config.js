@@ -1,46 +1,49 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: {
-        main: path.resolve(__dirname, '../src/index.js'),
-    },
-    output : {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
-    devtool: 'inline-source-map',
-    module: {
-        rules: [
-          {
-            test: /\.css$/i,
-            use: ['style-loader', 'css-loader'],
+  entry: path.resolve(__dirname, '../src/index.js'),  // Corrected path
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, '../dist'),  // Corrected path
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,  // Handles JS and JSX
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],  // Presets needed for JSX
           },
+        },
+      },
+      {
+        test: /\.css$/,  // CSS loader
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpg|gif)$/,  // Image loader
+        use: [
           {
-            test: /\.(png|jpe?g|gif|svg)$/i,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {
-                  name: '[name].[ext]',   
-    
-                  outputPath: 'images/',   
-    
-                },
-              },
-              'image-webpack-loader',
-            ],
-          },
-          {
-            test: /\.(js|jsx)$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: ['@babel/preset-env', '@babel/preset-react'],   
-    
-              },
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
             },
           },
         ],
-    },
-}
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '../dist/index.html'),  // Corrected path
+    }),
+  ],
+  devServer: {
+    static: path.resolve(__dirname, '../dist'),  // Corrected path
+    hot: true,
+  },
+  devtool: 'inline-source-map',
+};

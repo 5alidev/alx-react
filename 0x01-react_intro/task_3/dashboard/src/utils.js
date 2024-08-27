@@ -1,8 +1,8 @@
 export const getFullYear = () => {
-    return new Date().getFullYear().toString();
+    return new Date().getFullYear();
 }
 
-export const getFooterCopy = (isIndex) => {
+export const getFooterCopy = (isIndex = true) => {
     if (isIndex) {
         return 'Holberton School';
     }

@@ -1,43 +1,37 @@
-.App-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-header img {
-  width: 200px;
-  height: 200px;
+.App-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 6px solid #E0354B;
 }
 
 .App-header h1 {
-  color: red;
-  font-size: 3rem;
-  font-weight: bold;
+  color: #E0354B;
 }
 
-.App-body p {
-  padding: 1.3rem 1.7rem;
+.App-header img {
+  height: 200px;
 }
 
-p {
-  font-size: 1.2rem;
+.App-body {
+  padding: 3rem;
 }
 
 .App-footer {
-  width: 100%;
   position: absolute;
   bottom: 0;
+  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
+  border-top: 6px solid #E0354B;
+  padding: 1rem 0;
 }
 
-.App-header {
-  padding-bottom: 2rem;
-  border-bottom: 4px solid red;
-}
-
-.App-footer {
-  border-top: 4px solid red;
+.App-body label, .App-body input {
+  margin-right: 6px;
 }
