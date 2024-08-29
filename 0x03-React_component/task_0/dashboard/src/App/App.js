@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom/client';
 import './App.css';
 import Header from '../Header/Header';
@@ -9,7 +9,7 @@ import CourseList from '../CourseList/CourseList';
 import PropTypes from 'prop-types';
 import { getLatestNotification } from '../utils/utils';
 
-class App extends PureComponent {
+class App extends Component {
 
   render() {
 
@@ -29,8 +29,9 @@ class App extends PureComponent {
     ]
   
     return (
+      <>
+        <Notifications listNotifications={listNotifications} />
         <div className="App">
-          <Notifications listNotifications={listNotifications} />
           <Header />
           <div className="App-body">
             <p>Login to access the full dashboard</p>
@@ -38,6 +39,7 @@ class App extends PureComponent {
           </div>
           <Footer />
         </div>
+      </>
     );
   }
 }
