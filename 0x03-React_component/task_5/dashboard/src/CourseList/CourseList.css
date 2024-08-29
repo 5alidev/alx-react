@@ -1,0 +1,23 @@
+table {
+    margin-top: 2em;
+    width: 100%;
+    border: 1px solid #ddd;
+    margin-bottom: 10em;
+  }
+  
+  th {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th,
+  td {
+    width: 80%;
+  }
+  
+  table {
+    margin-inline: auto;
+  }
+  
+  tr:nth-child(2) {
+    text-align: left;
+  }
