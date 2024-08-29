@@ -11,10 +11,28 @@ import { getLatestNotification } from '../utils/utils';
 
 class App extends Component {
 
+  // Define the event handler as a method
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert('Logging you out');
+      this.props.logOut();
+    }
+  }
+
+  // component is mounted
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  // remove the event listener when the component is unmounted
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   render() {
 
     // props
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, logOut } = this.props;
 
     const listCourses = [
       {id: 1, name: 'ES6', credit: 60},
@@ -45,11 +63,13 @@ class App extends Component {
 }
 
 App.defaultProps = {
-  isLoggedIn: false
+  isLoggedIn: false,
+  logOut: () => {}
 }
 
 App.propTypes = {
-  isLoggedIn: PropTypes.bool
+  isLoggedIn: PropTypes.bool,
+  logOut: PropTypes.func
 }
 
 // App.defaultProps = {
