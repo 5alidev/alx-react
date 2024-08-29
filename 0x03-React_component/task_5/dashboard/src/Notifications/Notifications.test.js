@@ -76,4 +76,17 @@ describe('Notifications', () => {
 		expect(ConsoleSpy).toHaveBeenCalledWith(`Notification 1 has been read`);
 		wrapper.unmount();
   });
+
+  it(`When updating the props of the component with the SAME listNotifications, the component doesn't rerender`, () => {
+		const wrapper = shallow(<Notifications displayDrawer listNotifications={listNotifications} />);
+		wrapper.setProps({ listNotifications });
+		expect(wrapper.find(NotificationItem).length).toBe(2);
+	});
+
+	it(`When updating the props of the component with a LONGER listNotifications, the component DOES rerender`, () => {
+		const wrapper = shallow(<Notifications displayDrawer listNotifications={listNotifications} />);
+		wrapper.setProps({ listNotifications: listNotifications2 });
+		expect(wrapper.find(NotificationItem).length).toBe(3);
+	});
+
 });
