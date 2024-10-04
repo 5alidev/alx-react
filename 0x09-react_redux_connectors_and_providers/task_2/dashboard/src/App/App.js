@@ -1,147 +1,147 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom/client";
+import React from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, css } from "aphrodite";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Login from "../Login/Login";
 import Notifications from "../Notifications/Notifications";
 import CourseList from "../CourseList/CourseList";
-import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
 import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
 import BodySection from "../BodySection/BodySection";
-import { StyleSheet, css } from "aphrodite";
-import { AppContext, user } from "./AppContext";
+import { AppContext, defaultUser } from "./AppContext";
 import { connect } from "react-redux";
 import {
   displayNotificationDrawer,
   hideNotificationDrawer,
+  loginRequest,
 } from "../actions/uiActionCreators";
 
-class App extends Component {
-  // constructor
+const styles = StyleSheet.create({
+  AppBody: {
+    fontSize: "1.1rem",
+    paddingLeft: 10,
+    margin: 0,
+    minHeight: 350,
+  },
+});
+
+export class App extends React.Component {
   constructor(props) {
     super(props);
-
-    this.handleKeyCombination = this.handleKeyCombination.bind(this);
     this.state = {
-      displayDrawer: false,
-      user: user,
-      logOut: this.logOut,
+      user: defaultUser,
+      listCourses: [
+        { id: 1, name: "ES6", credit: 60 },
+        { id: 2, name: "Webpack", credit: 20 },
+        { id: 3, name: "React", credit: 40 },
+      ],
       listNotifications: [
-        { id: 1, type: "default", value: "New course available" },
-        { id: 2, type: "urgent", value: "New resume available" },
-        { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+        {
+          id: 1,
+          type: "default",
+          value: "New course available",
+          html: { __html: null },
+        },
+        {
+          id: 2,
+          type: "urgent",
+          html: { __html: "Object Oriented Programming intro" },
+        },
+        {
+          id: 3,
+          type: "default",
+          value: "Present Javascript project requirements test on Friday",
+        },
       ],
     };
   }
 
-  // Define the event handler as a method
-  handleKeyDown = (event) => {
-    if (event.ctrlKey && event.key === "h") {
-      alert("Logging you out");
-      this.props.logOut();
-    }
+  static propTypes = {
+    isLoggedIn: PropTypes.bool,
+    displayDrawer: PropTypes.bool,
+    displayNotificationDrawer: PropTypes.func,
+    hideNotificationDrawer: PropTypes.func,
+    login: PropTypes.func,
   };
 
-  // component is mounted
+  static defaultProps = {
+    isLoggedIn: false,
+    displayDrawer: false,
+    displayNotificationDrawer: () => {},
+    hideNotificationDrawer: () => {},
+    login: () => {},
+  };
+
+  markNotificationAsRead = (id) => {
+    const Notifications = this.state.listNotifications;
+    this.setState({
+      listNotifications: Notifications.filter((notif) => id != notif.id),
+    });
+  };
+
   componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
+    this.alert();
   }
 
-  // remove the event listener when the component is unmounted
+  alert() {
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.code == "KeyH") {
+        e.preventDefault();
+        alert("Logging you out");
+      }
+    });
+  }
+
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
-  }
-
-  // logIn
-  logIn(email, password) {
-    this.setState({ user: { email, password, isLoggedIn: true } });
-  }
-
-  // logOut
-  logOut() {
-    this.setState({ user: user });
-  }
-
-  // markNotificationAsRead
-  markNotificationAsRead(id) {
-    const newList = this.state.listNotifications.filter(
-      (notif) => notif.id !== id
-    );
-    this.setState({ listNotifications: newList });
+    window.removeEventListener("keydown", alert);
   }
 
   render() {
-    // state
-    const { displayDrawer } = this.state;
-
-    // props
+    const currentUser = this.state.user;
+    const logOut = this.logOut;
+    const displayDrawerState = this.state.displayDrawer;
     const showDrawer = this.props.displayNotificationDrawer;
     const hideDrawer = this.props.hideNotificationDrawer;
-
-    const listCourses = [
-      { id: 1, name: "ES6", credit: 60 },
-      { id: 2, name: "Webpack", credit: 20 },
-      { id: 3, name: "React", credit: 40 },
-    ];
-
+    const LoginStatus = () => {
+      if (this.props.isLoggedIn) {
+        return (
+          <BodySectionWithMarginBottom title="Course List">
+            <CourseList listCourses={this.state.listCourses} />
+          </BodySectionWithMarginBottom>
+        );
+      } else {
+        return (
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <Login logIn={this.props.login} />
+          </BodySectionWithMarginBottom>
+        );
+      }
+    };
     return (
-      <>
-        <AppContext.Provider
-          value={{ user: this.state.user, logOut: this.state.logOut }}
-        >
-          <Notifications
-            listNotifications={this.state.listNotifications}
-            displayDrawer={this.state.displayDrawer}
-            showDrawer={showDrawer}
-            hideDrawer={hideDrawer}
-            markNotificationAsRead={this.markNotificationAsRead}
-          />
-          <div className="App">
-            <Header />
-            <div className={css(styles.App_body)}>
-              <p>Login to access the full dashboard</p>
-              {this.state.user.isLoggedIn ? (
-                <BodySectionWithMarginBottom title="Course list">
-                  <CourseList listCourses={listCourses} />
-                </BodySectionWithMarginBottom>
-              ) : (
-                <BodySectionWithMarginBottom title="Log in to continue">
-                  <Login logIn={this.logIn} />
-                </BodySectionWithMarginBottom>
-              )}
-              <BodySection title="News from the School">
-                <p>paragraph with some random text</p>
-              </BodySection>
-            </div>
-            <Footer />
-          </div>
-        </AppContext.Provider>
-      </>
+      <AppContext.Provider value={{ currentUser, logOut }}>
+        <Notifications
+          displayDrawer={this.props.displayDrawer}
+          showDrawer={showDrawer}
+          hideDrawer={hideDrawer}
+          listNotifications={this.state.listNotifications}
+          markNotificationAsRead={this.markNotificationAsRead}
+        />
+        <Header />
+        <div className={css(styles.AppBody)}>
+          {LoginStatus()}
+          <BodySection title="News from the School">
+            <p>
+              News around the school! News around the school! News around the
+              school! News around the school! News around the school! News
+              around the school! News around the school! News around the school!
+            </p>
+          </BodySection>
+        </div>
+        <Footer />
+      </AppContext.Provider>
     );
   }
 }
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
-// styles
-const styles = StyleSheet.create({
-  App_body: {
-    padding: "3rem",
-  },
-});
-
-// App.defaultProps = {
-//   isLoggedIn: false
-// }
 
 export const mapStateToProps = (state) => {
   return {
@@ -154,7 +154,7 @@ export const mapDispatchToProps = (dispatch) => {
   return {
     displayNotificationDrawer: () => dispatch(displayNotificationDrawer()),
     hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
+    login: (email, password) => dispatch(loginRequest(email, password)),
   };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(App);
