@@ -1,15 +1,33 @@
-import { selectCourse, unSelectCourse } from "./courseActionCreators";
-import { SELECT_COURSE, UNSELECT_COURSE } from "./courseActionTypes";
+import {
+  fetchCourses,
+  selectCourse,
+  unSelectCourse,
+} from "./courseActionCreators";
+import configureStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import fetchMock from "fetch-mock-jest";
 
-describe("action creators tests", function () {
-  it("selectCourse should return: { type: SELECT_COURSE, index: 1 }", function () {
-    const result = selectCourse(1);
+const mockStore = configureStore([thunk]);
 
-    expect(result).toEqual({ type: SELECT_COURSE, index: 1 });
-  });
-  it("unSelectCourse should return: { type: UNSELECT_COURSE, index: 1 }", function () {
-    const result = unSelectCourse(1);
+afterEach(() => {
+  fetchMock.restore();
+});
 
-    expect(result).toEqual({ type: UNSELECT_COURSE, index: 1 });
+test("selectCourse func returns the right object", () => {
+  const action = selectCourse(1);
+  expect(action).toEqual({ type: "SELECT_COURSE", index: 1 });
+});
+
+test("unselectCourse func returns the right object", () => {
+  const action = unSelectCourse(1);
+  expect(action).toEqual({ type: "UNSELECT_COURSE", index: 1 });
+});
+
+test("fetchCourses", () => {
+  const store = mockStore({});
+  fetchMock.get("/courses.json", []);
+  return store.dispatch(fetchCourses()).then(() => {
+    const actions = store.getActions();
+    expect(actions).toEqual([{ type: "FETCH_COURSE_SUCCESS", data: [] }]);
   });
 });
