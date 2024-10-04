@@ -3,7 +3,7 @@ import { App, mapStateToProps } from "./App";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Login from "../Login/Login";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import CourseList from "../CourseList/CourseList";
 import { listCourses } from "../CourseList/CourseList.test";
 import { StyleSheetTestUtils } from "aphrodite";
@@ -66,10 +66,12 @@ describe("App Component when isLoggedin is true", () => {
 
 describe("mapStateToProps function", () => {
   test("mapStateToProps function", () => {
-    let state = fromJS({
-      isUserLoggedIn: true,
-      isNotificationDrawerVisible: true,
-    });
+    let state = {
+      ui: fromJS({
+        isUserLoggedIn: true,
+        isNotificationDrawerVisible: true,
+      }),
+    };
     const obj = mapStateToProps(state);
     expect(obj).toEqual({ isLoggedIn: true, displayDrawer: true });
   });
