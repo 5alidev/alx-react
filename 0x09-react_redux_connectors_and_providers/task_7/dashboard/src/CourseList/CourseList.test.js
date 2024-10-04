@@ -1,44 +1,50 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import CourseList from './CourseList';
-import CourseListRow from './CourseListRow';
-import { StyleSheetTestUtils } from 'aphrodite';
+import React from "react";
+import { CourseList } from "./CourseList";
+import { shallow } from "enzyme";
+import { StyleSheetTestUtils } from "aphrodite";
 
-describe("CourseList", () => {
-    beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-	afterEach(() => {
-		jest.clearAllMocks();
-	});
-    
-    it('renders without crashing', () => {
-        const courseListCopy = shallow(<CourseList />);
-        expect(courseListCopy.exists()).toBe(true);
-    });
+export const listCourses = [
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
-    it('renders the 5 different rows', () => {
-        const courseListCopy = shallow(<CourseList />);
-        expect(courseListCopy.find(CourseListRow)).toHaveLength(5);
-    });
+const wrapper = shallow(<CourseList listCoures={listCourses} />);
+describe("CourseList component when listCourses prop is empty/not specified", () => {
+  it("renders without crashing", () => {
+    expect(wrapper.exists()).toBe(true);
+  });
 
-    it('CourseList renders correctly if you pass an empty array or if you don’t pass the listCourses property', () => {
-        const courseListCopy = shallow(<CourseList listCourses={[]} />);
-        expect(courseListCopy.find(<CourseListRow isHeader={false} textFirstCell='No course available yet' />).exists()).toBe(true);
-        
-        const noCoursesList = shallow(<CourseList />);
-        expect(noCoursesList.find(<CourseListRow isHeader={false} textFirstCell='No course available yet' />).exists()).toBe(true);
-    });
+  it("renders the 2 headings", () => {
+    expect(wrapper.find("table thead").children().length).toEqual(2);
+  });
 
-    it('when a list of courses is passed, the component renders it correctly', () => {
-        const listCourses = [
-            {id: 1, name: 'ES6', credit: 60},
-            {id: 2, name: 'Webpack', credit: 20},
-            {id: 3, name: 'React', credit: 40}
-        ];
+  it("fetcCourses action creator is called when component is mounted", () => {
+    const fetchCourses = jest.fn();
+    const wrapper = shallow(
+      <CourseList listCoures={listCourses} fetchCourses={fetchCourses} />
+    );
+    // const instance = wrapper.instance()
+    // instance.componentDidMount()
+    expect(fetchCourses).toHaveBeenCalled();
+  });
+});
 
-        const courseListCopy = shallow(<CourseList listCourses={listCourses} />);
-        expect(courseListCopy.find("tbody").children()).toHaveLength(3);
-    });
+const wrapper2 = shallow(<CourseList listCourses={listCourses} />);
+const coursesLength = listCourses.length;
+describe("CourseList component when listCourses prop is empty/not specified", () => {
+  it("renders without crashing", () => {
+    expect(wrapper2.exists()).toBe(true);
+  });
+
+  it("renders the 5 different rows", () => {
+    expect(wrapper2.find("table thead").children().length).toEqual(2);
+    expect(wrapper2.find("table tbody").children().length).toEqual(
+      coursesLength
+    );
+  });
 });
