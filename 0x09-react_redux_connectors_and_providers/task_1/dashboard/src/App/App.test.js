@@ -185,8 +185,9 @@ describe("App State", () => {
   test("mapStateToProps", () => {
     let state = fromJS({
       isUserLoggedIn: true,
+      isNotificationDrawerVisible: true,
     });
     const obj = mapStateToProps(state);
-    expect(obj).toEqual({ isLoggedIn: true });
+    expect(obj).toEqual({ isLoggedIn: true, displayDrawer: true });
   });
 });
