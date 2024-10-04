@@ -7,6 +7,7 @@ import Login from "../Login/Login.js";
 import Footer from "../Footer/Footer.js";
 import CourseList from "../CourseList/CourseList.js";
 import { StyleSheetTestUtils } from "aphrodite";
+import { mapStateToProps } from "./App.js";
 
 describe("App", () => {
   beforeEach(() => {
@@ -179,5 +180,13 @@ describe("App State", () => {
     expect(wrapper.state().listNotifications[3]).toBe(undefined);
 
     wrapper.unmount();
+  });
+
+  test("mapStateToProps", () => {
+    let state = fromJS({
+      isUserLoggedIn: true,
+    });
+    const obj = mapStateToProps(state);
+    expect(obj).toEqual({ isLoggedIn: true });
   });
 });
