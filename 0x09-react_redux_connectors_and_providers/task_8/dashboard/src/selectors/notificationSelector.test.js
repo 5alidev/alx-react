@@ -1,0 +1,46 @@
+import { filterTypeSelected, getNotifications } from "./notificationSelector";
+import { notificationsNormalizer } from "../schema/notifications";
+import { Map } from "immutable";
+
+const initialState = Map({
+  notifications: [],
+  filter: "DEFAULT",
+});
+
+const returnState = {
+  filter: "DEFAULT",
+  notifications: [
+    {
+      id: 1,
+      isRead: false,
+      type: "default",
+      value: "New course available",
+    },
+    {
+      id: 2,
+      isRead: false,
+      type: "urgent",
+      value: "New resume available",
+    },
+    {
+      id: 3,
+      isRead: false,
+      type: "urgent",
+      value: "New data available",
+    },
+  ],
+};
+
+describe("tests for notificationSelector", () => {
+  it("returns filter as expected", () => {
+    const filter = filterTypeSelected(initialState);
+    expect(filter).toEqual("DEFAULT");
+  });
+
+  it("returns notifications as expected", () => {
+    const notifications = notificationsNormalizer(returnState);
+    expect(getNotifications(notifications)).toEqual(
+      notifications.notifications
+    );
+  });
+});
