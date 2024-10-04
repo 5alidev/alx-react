@@ -6,10 +6,10 @@ import PropTypes from "prop-types";
 import {
   fetchNotifications,
   markAsRead,
+  setNotificationFilter,
 } from "../actions/notificationActionCreators";
 import { connect } from "react-redux";
-import { Map } from "immutable";
-import { getUnreadNotifications } from "../selectors/notificationSelector";
+import { getUnreadNotificationsByType } from "../selectors/notificationSelector";
 
 const bounceKeyFrames = {
   "0%": {
@@ -87,6 +87,20 @@ const styles = StyleSheet.create({
   },
 });
 
+const notifType = (color) => {
+  return {
+    color: "white",
+    background: color,
+    border: `1px solid ${color}`,
+    padding: "3px",
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+};
+
+const urgent = notifType("red");
+const dfault = notifType("darkblue");
+
 export class Notifications extends React.PureComponent {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.object),
@@ -102,12 +116,37 @@ export class Notifications extends React.PureComponent {
   }
 
   render() {
+    const filterbtns = () => {
+      return (
+        <p>
+          <span
+            id="default"
+            onClick={() => this.props.setNotificationFilter("DEFAULT")}
+            style={dfault}
+          >
+            default
+          </span>{" "}
+          &nbsp;
+          <span
+            id="urgent"
+            onClick={() => this.props.setNotificationFilter("URGENT")}
+            style={urgent}
+          >
+            urgent!
+          </span>
+        </p>
+      );
+    };
     const loadNotifs = () => {
       let rows = <></>;
       const notifArray = this.props.messages;
-      // console.log(notifArray)
       if (notifArray.length == 0) {
-        return <p>No new notification for now</p>;
+        return (
+          <>
+            {filterbtns()}
+            <p>No new notification for now</p>
+          </>
+        );
       } else {
         rows = notifArray.map((notif, key) => {
           return (
@@ -124,6 +163,7 @@ export class Notifications extends React.PureComponent {
       return (
         <>
           <p className={css(styles.p)}>Here is the list of notifications:</p>
+          {filterbtns()}
           <ul className={css(styles.ul)}>{rows}</ul>
         </>
       );
@@ -163,15 +203,16 @@ export class Notifications extends React.PureComponent {
   }
 }
 
-const mapPropstoState = (state) => {
-  return { messages: getUnreadNotifications(state) };
+const mapStateToProps = (state) => {
+  return { messages: getUnreadNotificationsByType(state).toJS() };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchNotifications: () => dispatch(fetchNotifications()),
     markNotificationAsRead: (index) => dispatch(markAsRead(index)),
+    setNotificationFilter: (filter) => dispatch(setNotificationFilter(filter)),
   };
 };
 
-export default connect(mapPropstoState, mapDispatchToProps)(Notifications);
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
