@@ -47,24 +47,59 @@ and messages prop is not empty`, () => {
 
   it("renders first NotificationItem element with the right html", () => {
     const firstChild = wrapper.find("ul").children().first();
-    // console.log(firstChild.html())
     expect(firstChild.html()).toBe(
-      '<li class="urgent_1uqgzdq-o_O-listItem_1fp99j6" data-notification-type="urgent">\
+      '<li class="urgent_137u7ef-o_O-listItem_mdjmz6" data-notification-type="urgent">\
 Odio pellentesque</li>'
     );
   });
+
+  it("call fetctNotifications actioncreator when component is mounted", () => {
+    const fetchNotifications = jest.fn();
+    const wrapper = shallow(
+      <Notifications fetchNotifications={fetchNotifications} />
+    );
+    expect(fetchNotifications).toHaveBeenCalled();
+  });
+
+  it("calls setNotificationFilter with DEFAULT when 'default' button is clicked ", () => {
+    const setNotificationFilter = jest.fn();
+    const wrapper = shallow(
+      <Notifications
+        displayDrawer={true}
+        messages={messages}
+        setNotificationFilter={() => setNotificationFilter("DEFAULT")}
+      />
+    );
+    const defaultbtn = wrapper.find({ id: "default" });
+    defaultbtn.simulate("click");
+    expect(setNotificationFilter).toHaveBeenCalledWith("DEFAULT");
+  });
+
+  it("calls setNotificationFilter with URGENT when 'urgent' button is clicked ", () => {
+    const setNotificationFilter = jest.fn();
+    const wrapper = shallow(
+      <Notifications
+        displayDrawer={true}
+        messages={messages}
+        setNotificationFilter={() => setNotificationFilter("URGENT")}
+      />
+    );
+    const urgentbtn = wrapper.find({ id: "urgent" });
+    urgentbtn.simulate("click");
+    expect(setNotificationFilter).toHaveBeenCalledWith("URGENT");
+  });
 });
 
-const wrapper2 = shallow(<Notifications displayDrawer={true} />);
 describe(`Notifications Component when displayDrawer prop is true
 and messages prop is empty (or not used)`, () => {
+  const wrapper = shallow(<Notifications displayDrawer={true} />);
   it("renders without crashing", () => {
-    expect(wrapper2.exists()).toBe(true);
+    expect(wrapper.exists()).toBe(true);
   });
 
   it("renders the text: 'No new notification for now'", () => {
     expect(
-      wrapper2.containsMatchingElement(<p>No new notification for now</p>)
+      wrapper.containsMatchingElement(<p>No new notification for now</p>)
     ).toEqual(true);
   });
 });
